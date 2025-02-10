@@ -1,26 +1,28 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, Alert } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
-const LoginScreen = ({ navigation }) => {
-  const [secretKey, setSecretKey] = useState("");
+const LoginScreen = () => {
+  const [secretKey, setSecretKey] = useState('');
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
     try {
       const response = await axios.get('http://192.168.9.32:3000/warehousemans');
-      const warehousemans = await response.json();
-      
+      const warehousemans = response.data;
+
       const user = warehousemans.find(w => w.secretKey === secretKey);
-      
+
       if (user) {
-        Alert.alert("Succès", `Bienvenue ${user.name} !`);
-        navigation.navigate("Home", { user });
+        Alert.alert('Succès', `Bienvenue ${user.name} !`);
+        navigation.navigate('(tabs)', { user });
       } else {
-        Alert.alert("Erreur", "Code secret incorrect");
+        Alert.alert('Erreur', 'Code secret incorrect');
       }
     } catch (error) {
-    console.log(error)
-      Alert.alert("Erreur", "Impossible de se connecter au serveur " + error);
+      console.log(error);
+      Alert.alert('Erreur', 'Impossible de se connecter au serveur ' + error);
     }
   };
 
