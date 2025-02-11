@@ -9,7 +9,7 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.get('http://192.168.9.32:3000/warehousemans');
+      const response = await axios.get('http://192.168.9.42:3000/warehousemans');
       const warehousemans = response.data;
 
       const user = warehousemans.find(w => w.secretKey === secretKey);
