@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const [secretKey, setSecretKey] = useState('');
@@ -15,6 +16,9 @@ const LoginScreen = () => {
       const user = warehousemans.find(w => w.secretKey === secretKey);
 
       if (user) {
+        await AsyncStorage.setItem('@user_data', JSON.stringify(user));
+        console.log('User data stored:', user);
+
         Alert.alert('Succès', `Bienvenue ${user.name} !`);
         navigation.navigate('(tabs)', { user });
       } else {

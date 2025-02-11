@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Switch } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import RNPickerSelect from 'react-native-picker-select';
+
 
 type RootStackParamList = {
   ProductList: undefined;
   AddProductScreen: undefined;
 };
 
-type AddProductScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AddProductScreen'>;
+type AddProductScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'AddProductScreen'
+>;
 
 interface Props {
   navigation: AddProductScreenNavigationProp;
 }
+
 
 const AddProductScreen: React.FC<Props> = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -22,11 +30,35 @@ const AddProductScreen: React.FC<Props> = ({ navigation }) => {
   const [supplier, setSupplier] = useState('');
   const [image, setImage] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [warehouseId, setWarehouseId] = useState('');
+  const [warehouseId, setWarehouseId] = useState(null);
+  const [warehouseLocation, setWarehouseLocation] = useState(null);
+  const [isStockAvailable, setIsStockAvailable] = useState(true);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('@user_data');
+        if (jsonValue != null) {
+          const user = JSON.parse(jsonValue);
+          setWarehouseId(user.warehouseId);
+          setWarehouseLocation(user.localisation);
+        }
+      } catch (e) {
+        console.error('Error retrieving user data:', e);
+      }
+    };
+
+    getUserData();
+  }, []);
 
   const handleSubmit = async () => {
-    if (!name || !type || !barcode || !price || !supplier || !quantity || !warehouseId) {
+    if (!name || !type || !barcode || !price || !supplier) {
       Alert.alert('Erreur', 'Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    if (isStockAvailable && !quantity) {
+      Alert.alert('Erreur', 'Veuillez spécifier une quantité en stock.');
       return;
     }
 
@@ -37,15 +69,19 @@ const AddProductScreen: React.FC<Props> = ({ navigation }) => {
       price: parseFloat(price),
       supplier,
       image,
-      stocks: [
-        {
-          id: parseInt(warehouseId),
-          quantity: parseInt(quantity),
-        },
-      ],
+      stocks: isStockAvailable
+        ? [
+            {
+              id: warehouseId,
+              name: `Entrepôt ${warehouseId}`,
+              quantity: parseInt(quantity),
+              localisation: warehouseLocation,
+            },
+          ]
+        : [],
       editedBy: [
         {
-          warehousemanId: 1, 
+          warehousemanId: warehouseId,
           at: new Date().toISOString().split('T')[0],
         },
       ],
@@ -54,7 +90,7 @@ const AddProductScreen: React.FC<Props> = ({ navigation }) => {
     try {
       await axios.post('http://10.0.2.2:3000/products', newProduct);
       Alert.alert('Succès', 'Produit ajouté avec succès.', [
-        { text: 'OK', onPress: () => navigation.navigate('ProductList') },
+        { text: 'OK', onPress: () => navigation.popToTop() },
       ]);
     } catch (error) {
       Alert.alert('Erreur', 'Une erreur est survenue lors de l\'ajout du produit.');
@@ -73,7 +109,12 @@ const AddProductScreen: React.FC<Props> = ({ navigation }) => {
       <TextInput style={styles.input} value={barcode} onChangeText={setBarcode} />
 
       <Text style={styles.label}>Prix *</Text>
-      <TextInput style={styles.input} value={price} onChangeText={setPrice} keyboardType="numeric" />
+      <TextInput
+        style={styles.input}
+        value={price}
+        onChangeText={setPrice}
+        keyboardType="numeric"
+      />
 
       <Text style={styles.label}>Fournisseur *</Text>
       <TextInput style={styles.input} value={supplier} onChangeText={setSupplier} />
@@ -82,10 +123,32 @@ const AddProductScreen: React.FC<Props> = ({ navigation }) => {
       <TextInput style={styles.input} value={image} onChangeText={setImage} />
 
       <Text style={styles.label}>Quantité initiale *</Text>
-      <TextInput style={styles.input} value={quantity} onChangeText={setQuantity} keyboardType="numeric" />
+      <TextInput
+        style={styles.input}
+        value={quantity}
+        onChangeText={setQuantity}
+        keyboardType="numeric"
+        editable={isStockAvailable}
+      />
 
-      <Text style={styles.label}>ID de l'entrepôt *</Text>
-      <TextInput style={styles.input} value={warehouseId} onChangeText={setWarehouseId} keyboardType="numeric" />
+      <Text style={styles.label}>Stock disponible</Text>
+      <View style={styles.switchContainer}>
+        <Text>Oui</Text>
+        <Switch
+          value={isStockAvailable}
+          onValueChange={setIsStockAvailable}
+        />
+        <Text>Non</Text>
+      </View>
+
+      <Text style={styles.label}>Localisation de l'entrepôt *</Text>
+      <RNPickerSelect
+        onValueChange={(value) => setWarehouseLocation(value)}
+        items={[
+          { label: 'Marrakech', value: { city: 'Marrakech', latitude: 31.628674, longitude: -7.992047 } },
+          { label: 'Oujda', value: { city: 'Oujda', latitude: 34.689404, longitude: -1.912823 } },
+        ]}
+      />
 
       <Button title="Ajouter le produit" onPress={handleSubmit} />
     </View>
@@ -106,6 +169,11 @@ const styles = StyleSheet.create({
     padding: 8,
     marginTop: 5,
     borderRadius: 5,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
   },
 });
 
