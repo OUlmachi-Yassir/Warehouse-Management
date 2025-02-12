@@ -10,7 +10,7 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.get(`http://192.168.8.255:3000/warehousemans`);
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_APP_API_URL}/warehousemans`);
       const warehousemans = response.data;
 
       const user = warehousemans.find(w => w.secretKey === secretKey);
