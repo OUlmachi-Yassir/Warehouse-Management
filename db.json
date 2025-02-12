@@ -11,7 +11,7 @@
       "image": "https://mediazone.ma/uploads/images/products/16412/landing-page/assets/images/swiper-1.png",
       "stocks": [
         {
-          "id": 1999,
+          "id": "1999",
           "name": "Gueliz B2",
           "quantity": 21,
           "localisation": {
@@ -50,7 +50,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 20,
+          "quantity": 21,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -88,33 +88,6 @@
         {
           "warehousemanId": 1444,
           "at": "2025-02-02"
-        }
-      ]
-    },
-    {
-      "id": "51d6",
-      "name": "Hola test",
-      "type": "test",
-      "barcode": "1111111111111",
-      "price": 1111,
-      "supplier": "TEST",
-      "image": "TESTZSAE",
-      "stocks": [
-        {
-          "id": 2991,
-          "name": "Entrepôt 2991",
-          "quantity": 111,
-          "localisation": {
-            "city": "Marrakech",
-            "latitude": 31.628674,
-            "longitude": -7.992047
-          }
-        }
-      ],
-      "editedBy": [
-        {
-          "warehousemanId": 2991,
-          "at": "2025-02-11"
         }
       ]
     }

@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
   container: {
     position: "relative",
     alignItems: "flex-end",
+    backgroundColor:'transparent',
   },
   button: {
     position: "absolute",

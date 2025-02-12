@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop:30,
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'transparent',
   },
   itemContainer: {
     flexDirection: 'row',
