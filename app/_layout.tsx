@@ -34,6 +34,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="AddProductScreen" options={{ title: 'Add Product' }} />
+        <Stack.Screen name="ProductDetailScreen" options={{ title: '' }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

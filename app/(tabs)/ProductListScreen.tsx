@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import FloatingButtons from '@/components/FloatingButtons';
@@ -40,7 +40,6 @@ const ProductListScreen: React.FC = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get<Product[]>(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`);
-        
         setProducts(response.data);
       } catch (error) {
         console.error('Erreur lors de la récupération des produits:', error);
@@ -50,18 +49,19 @@ const ProductListScreen: React.FC = () => {
     };
 
     fetchProducts();
-  }, [products]);
+  }, []);
 
   const renderItem = ({ item }: { item: Product }) => (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => router.push({ pathname: "/ProductDetailScreen", params: { id: item.id } })}
+    >
       <Text style={styles.itemName}>{item.name}</Text>
-      <Text>Type: {item.type}</Text>
+      <Text>Type: {item.id }</Text>
       <Text>Prix: {item.price} MAD</Text>
       <Text>Fournisseur: {item.supplier}</Text>
-      <Text>
-        Quantité en stock: {item.stocks.reduce((total, stock) => total + stock.quantity, 0)}
-      </Text>
-    </View>
+      <Text>Quantité en stock: {item.stocks.reduce((total, stock) => total + stock.quantity, 0)}</Text>
+    </TouchableOpacity>
   );
 
   if (loading) {
@@ -99,6 +99,12 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: '#f9f9f9',
     borderRadius: 5,
+    elevation: 3, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    marginBottom: 10,
   },
   itemName: {
     fontWeight: 'bold',
@@ -120,3 +126,4 @@ const styles = StyleSheet.create({
 });
 
 export default ProductListScreen;
+ 
