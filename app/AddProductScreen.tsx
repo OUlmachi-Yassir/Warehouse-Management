@@ -88,7 +88,7 @@ const AddProductScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     try {
-      await axios.post('http://10.0.2.2:3000/products', newProduct);
+      await axios.post(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`, newProduct);
       Alert.alert('Succès', 'Produit ajouté avec succès.', [
         { text: 'OK', onPress: () => navigation.popToTop() },
       ]);

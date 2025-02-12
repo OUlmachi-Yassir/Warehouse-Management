@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
+import FloatingButtons from '@/components/FloatingButtons';
 
 interface Stock {
   id: number;
@@ -38,7 +39,7 @@ const ProductListScreen: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get<Product[]>('http://10.0.2.2:3000/products');
+        const response = await axios.get<Product[]>(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`);
         
         setProducts(response.data);
       } catch (error) {
@@ -49,7 +50,7 @@ const ProductListScreen: React.FC = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [products]);
 
   const renderItem = ({ item }: { item: Product }) => (
     <View style={styles.itemContainer}>
@@ -84,7 +85,7 @@ const ProductListScreen: React.FC = () => {
           </View>
         )}
       />
-      <Button title="Ajouter un produit" onPress={() => router.push('/AddProductScreen')} />
+      <FloatingButtons />
     </View>
   );
 };
