@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, ActivityIndicator, FlatList, TouchableOp
 import { useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { Picker } from "@react-native-picker/picker";
+
 interface Stock {
   id: number;
   name: string;
@@ -38,9 +39,7 @@ const ProductDetailScreen = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get<Product>(
-          `${process.env.EXPO_PUBLIC_APP_API_URL}/products/${id}`
-        );
+        const response = await axios.get<Product>(`${process.env.EXPO_PUBLIC_APP_API_URL}/products/${id}`);
         setProduct(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération du produit:", error);
@@ -51,7 +50,6 @@ const ProductDetailScreen = () => {
 
     fetchProduct();
   }, [id]);
-
 
   const updateStock = async (stockId: number, newQuantity: number) => {
     if (!product) return;
@@ -76,7 +74,7 @@ const ProductDetailScreen = () => {
 
   const addStock = async () => {
     if (!product || !newStock.name || newStock.quantity <= 0 || !newStock.city) return;
-  
+
     try {
       const updatedProduct = {
         ...product,
@@ -93,45 +91,54 @@ const ProductDetailScreen = () => {
           },
         ],
       };
-  
-      const response = await axios.put(
-        `${process.env.EXPO_PUBLIC_APP_API_URL}/products/${id}`,
-        updatedProduct
-      );
-  
-      setProduct(response.data); 
-      setModalVisible(false); 
+
+      const response = await axios.put(`${process.env.EXPO_PUBLIC_APP_API_URL}/products/${id}`, updatedProduct);
+      setProduct(response.data);
+      setModalVisible(false);
     } catch (error) {
       console.error("Erreur lors de l'ajout du stock:", error);
     }
   };
-  
 
-  const removeStock = async (stockId: number) => {
-    if (!product) return;
-
+  const removeStockFromProduct = async (productId: number, stockId: number) => {
     try {
-      await axios.delete(`${process.env.EXPO_PUBLIC_APP_API_URL}/products/${id}`);
+      const response = await fetch(`${process.env.EXPO_PUBLIC_APP_API_URL}/products/${productId}`);
+      const product = await response.json();
 
+      if (!response.ok) {
+        throw new Error("Failed to fetch product");
+      }
+
+      const updatedStocks = product.stocks.filter((stock: Stock) => stock.id !== stockId);
+
+      const updateResponse = await fetch(`${process.env.EXPO_PUBLIC_APP_API_URL}/products/${productId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...product, stocks: updatedStocks }),
+      });
+
+      if (!updateResponse.ok) {
+        throw new Error("Failed to update product");
+      }
+
+      console.log("Stock removed successfully!");
       setProduct((prev) => {
         if (!prev) return null;
-        return {
-          ...prev,
-          stocks: prev.stocks.filter((stock) => stock.id !== stockId)
-        };
+        return { ...prev, stocks: updatedStocks };
       });
+
     } catch (error) {
-      console.error("Erreur lors de la suppression du stock:", error);
+      console.error("Error:", error);
     }
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  const removeStock = (stockId: number) => {
+    if (product) {
+      removeStockFromProduct(product.id, stockId);
+    }
+  };
 
   if (loading) {
     return (
@@ -194,15 +201,13 @@ const ProductDetailScreen = () => {
               style={styles.input}
               placeholder="Nom du stock"
               value={newStock.name}
-              onChangeText={(text) => setNewStock((prev) => ({ ...prev, name: text }))}
-            />
+              onChangeText={(text) => setNewStock((prev) => ({ ...prev, name: text }))} />
             <TextInput
               style={styles.input}
               placeholder="Quantité"
               keyboardType="numeric"
               value={String(newStock.quantity)}
-              onChangeText={(text) => setNewStock((prev) => ({ ...prev, quantity: parseInt(text) }))}
-            />
+              onChangeText={(text) => setNewStock((prev) => ({ ...prev, quantity: parseInt(text) }))} />
             <Text style={styles.inputLabel}>Ville</Text>
             <View style={styles.citySelector}>
               <Picker
@@ -211,7 +216,7 @@ const ProductDetailScreen = () => {
                   setSelectedCity(itemValue);
                   setNewStock((prev) => ({
                     ...prev,
-                    city: itemValue, 
+                    city: itemValue,
                   }));
                 }}
               >
