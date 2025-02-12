@@ -118,33 +118,6 @@
           "at": "2025-02-02"
         }
       ]
-    },
-    {
-      "id": "4946",
-      "name": "TEST",
-      "type": "test",
-      "barcode": "123333333333331",
-      "price": 199,
-      "supplier": "MOI",
-      "image": "https://technoplace.ma/18113-side_product_default/dell-precision-5550-i7-10750h-156-fhd-16gb-1tb-ssd-win-10-pro-nvidia-quadro-t1000-4gb-36m.jpg",
-      "stocks": [
-        {
-          "id": 2991,
-          "name": "Entrepôt 2991",
-          "quantity": 22,
-          "localisation": {
-            "city": "Marrakech",
-            "latitude": 31.628674,
-            "longitude": -7.992047
-          }
-        }
-      ],
-      "editedBy": [
-        {
-          "warehousemanId": 2991,
-          "at": "2025-02-12"
-        }
-      ]
     }
   ],
   "warehousemans": [

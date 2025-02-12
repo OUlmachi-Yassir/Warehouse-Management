@@ -36,7 +36,6 @@ const ProductListScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get<Product[]>(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`);
@@ -48,8 +47,14 @@ const ProductListScreen: React.FC = () => {
       }
     };
 
-    fetchProducts();
+  useEffect(() => {
+    fetchProducts(); 
+    
+    const interval = setInterval(fetchProducts, 1000); 
+    
+    return () => clearInterval(interval); 
   }, []);
+
 
   const getBorderColor = (quantity: number) => {
     if (quantity === 0) return 'red';
