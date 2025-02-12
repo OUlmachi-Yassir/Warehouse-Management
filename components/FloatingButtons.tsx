@@ -78,8 +78,7 @@ const toggleButtons = () => {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-end",
   },
   button: {
     position: "absolute",
