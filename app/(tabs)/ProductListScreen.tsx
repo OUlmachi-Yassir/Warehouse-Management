@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image, Alert, TextInput  } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import FloatingButtons from '@/components/FloatingButtons';
+import { sortProducts, filterByCity,searchProducts } from '@/services/productService';
+import { Picker } from '@react-native-picker/picker';
 
 interface Stock {
   id: number;
@@ -31,11 +33,14 @@ interface Product {
   }[];
 }
 
-
-
 const ProductListScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [sortCriterion, setSortCriterion] = useState<'price' | 'name' | 'quantity'>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const router = useRouter();
 
   const fetchProducts = async () => {
@@ -57,6 +62,24 @@ const ProductListScreen: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleSearch = () => {
+    let result = [...products];
+
+    if (selectedCity) {
+      result = filterByCity(result, selectedCity);
+    }
+
+    result = searchProducts(result, searchKeyword, 'name'); 
+
+    result = sortProducts(result, sortCriterion, sortOrder);
+
+    setFilteredProducts(result);
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchKeyword, selectedCity, sortCriterion, sortOrder, products]);
+
   const getBorderColor = (quantity: number) => {
     if (quantity === 0) return 'red';
     if (quantity > 0 && quantity < 10) return 'yellow';
@@ -73,14 +96,14 @@ const ProductListScreen: React.FC = () => {
         const statestic = {
           mostRemovedProducts:[productToDelete]
         }; 
-        console.log(statestic)
+        console.log(statestic);
   
-       try{
-        const response = await axios.post(`${process.env.EXPO_PUBLIC_APP_API_URL}/statistics`,statestic);
-        console.log(response.data);
-       }catch(error){
-        console.log("Here is the error",error)
-       } 
+        try {
+          const response = await axios.post(`${process.env.EXPO_PUBLIC_APP_API_URL}/statistics`, statestic);
+          console.log(response.data);
+        } catch (error) {
+          console.log('Here is the error', error);
+        }
       }
   
       setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
@@ -89,7 +112,6 @@ const ProductListScreen: React.FC = () => {
       Alert.alert('Erreur', 'Une erreur est survenue lors de la suppression du produit.');
     }
   };
-  
 
   const renderItem = ({ item }: { item: Product }) => {
     const totalQuantity = item.stocks.reduce((total, stock) => total + stock.quantity, 0);
@@ -125,8 +147,38 @@ const ProductListScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Rechercher un produit"
+        value={searchKeyword}
+        onChangeText={setSearchKeyword}
+      />
+
+      <Picker
+        selectedValue={selectedCity}
+        style={styles.picker}
+        onValueChange={(itemValue: string) => setSelectedCity(itemValue)}
+      >
+        <Picker.Item label="Sélectionner une ville" value="" />
+        <Picker.Item label="City 1" value="City 1" />
+        <Picker.Item label="City 2" value="City 2" />
+        <Picker.Item label="City 3" value="City 3" />
+      </Picker>
+
+      <View style={styles.sortingContainer}>
+        <TouchableOpacity onPress={() => setSortCriterion('price')} style={styles.sortButton}>
+          <Text style={styles.sortButtonText}>Price</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setSortCriterion('name')} style={styles.sortButton}>
+          <Text style={styles.sortButtonText}>Name</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setSortCriterion('quantity')} style={styles.sortButton}>
+          <Text style={styles.sortButtonText}>Quantity</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
-        data={products}
+        data={filteredProducts}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -147,6 +199,33 @@ const styles = StyleSheet.create({
     marginTop: 30,
     padding: 20,
     backgroundColor: 'transparent',
+  },
+  searchInput: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingLeft: 10,
+    marginBottom: 20,
+  },
+  picker: {
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  sortingContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  sortButton: {
+    marginRight: 10,
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 5,
+  },
+  sortButtonText: {
+    color: '#fff',
   },
   itemContainer: {
     flexDirection: 'row',

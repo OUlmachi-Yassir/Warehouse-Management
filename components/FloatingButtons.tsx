@@ -77,9 +77,11 @@ const toggleButtons = () => {
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
-    alignItems: "flex-end",
-    backgroundColor:'transparent',
+    position: "absolute",
+    top: "90%", 
+    left: "90%", 
+    transform: [{ translateX: -25 }, { translateY: -25 }], 
+    backgroundColor: "transparent",
   },
   button: {
     position: "absolute",
