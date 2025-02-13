@@ -136,14 +136,20 @@
       ]
     },
     {
-      "id": "b9b1",
-      "name": "test4",
-      "type": "tessy",
-      "barcode": "1111111111",
-      "price": 0,
-      "supplier": "1OP",
-      "image": "https://technoplace.ma/18113-side_product_default/dell-precision-5550-i7-10750h-156-fhd-16gb-1tb-ssd-win-10-pro-nvidia-quadro-t1000-4gb-36m.jpg",
-      "stocks": [],
+      "id": "65da",
+      "name": "zzzzzzzzzzz",
+      "type": "zzzzzzzzz",
+      "barcode": "11111111111",
+      "price": 1111,
+      "supplier": "1ZZZZZZ",
+      "image": "1ZZZZZZZZZZZZ",
+      "stocks": [
+        {
+          "id": 2991,
+          "name": "Entrepôt 2991",
+          "quantity": 111111
+        }
+      ],
       "editedBy": [
         {
           "warehousemanId": 2991,
@@ -152,18 +158,18 @@
       ]
     },
     {
-      "id": "5407",
-      "name": "test4TTT",
-      "type": "tessy",
+      "id": "6868",
+      "name": "11111111ZZ",
+      "type": "ZZZZZZZZZ",
       "barcode": "1111111111",
-      "price": 0,
-      "supplier": "1OP",
-      "image": "https://technoplace.ma/18113-side_product_default/dell-precision-5550-i7-10750h-156-fhd-16gb-1tb-ssd-win-10-pro-nvidia-quadro-t1000-4gb-36m.jpg",
+      "price": 111111111111111,
+      "supplier": "ZZZZZZZZZ",
+      "image": "ZZZZZZZZZZ",
       "stocks": [
         {
           "id": 2991,
           "name": "Entrepôt 2991",
-          "quantity": 11,
+          "quantity": 111,
           "localisation": {
             "city": "Marrakech",
             "latitude": 31.628674,
@@ -179,18 +185,18 @@
       ]
     },
     {
-      "id": "4de2",
-      "name": "test4TTTddzqdzq",
-      "type": "tessydqzdqzd",
-      "barcode": "1111111111111",
-      "price": 0,
-      "supplier": "1OPAAAA",
-      "image": "https://technoplace.ma/18113-side_product_default/dell-precision-5550-i7-10750h-156-fhd-16gb-1tb-ssd-win-10-pro-nvidia-quadro-t1000-4gb-36m.jpg",
+      "id": "d57a",
+      "name": "11111111ZZ",
+      "type": "ZZZZZ",
+      "barcode": "1111111111",
+      "price": 111111111111111,
+      "supplier": "ZZZZZZZZZ",
+      "image": "ZZZZZZZZZZ",
       "stocks": [
         {
           "id": 2991,
           "name": "Entrepôt 2991",
-          "quantity": 11,
+          "quantity": 111,
           "localisation": {
             "city": "Marrakech",
             "latitude": 31.628674,

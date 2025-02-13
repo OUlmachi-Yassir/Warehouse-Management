@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image, Alert } from 'react-native';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import FloatingButtons from '@/components/FloatingButtons';
@@ -31,30 +31,31 @@ interface Product {
   }[];
 }
 
+
+
 const ProductListScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get<Product[]>(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`);
-        setProducts(response.data);
-      } catch (error) {
-        console.error('Erreur lors de la récupération des produits:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get<Product[]>(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`);
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des produits:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetchProducts(); 
-    
-    const interval = setInterval(fetchProducts, 1000); 
-    
-    return () => clearInterval(interval); 
-  }, []);
+    fetchProducts();
 
+    const interval = setInterval(fetchProducts, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const getBorderColor = (quantity: number) => {
     if (quantity === 0) return 'red';
@@ -62,13 +63,38 @@ const ProductListScreen: React.FC = () => {
     return 'green';
   };
 
+  const handleDeleteProduct = async (productId: number) => {
+    try {
+      const productToDelete = products.find(product => product.id === productId);
+  
+      await axios.delete(`${process.env.EXPO_PUBLIC_APP_API_URL}/products/${productId}`);
+  
+      if (productToDelete) {
+        const statestic = {
+          mostRemovedProducts:[productToDelete]
+        }; 
+        console.log(statestic)
+  
+       try{
+        const response = await axios.post(`${process.env.EXPO_PUBLIC_APP_API_URL}/statistics`,statestic);
+        console.log(response.data);
+       }catch(error){
+        console.log("Here is the error",error)
+       } 
+      }
+  
+      setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
+    } catch (error) {
+      console.error('Erreur lors de la suppression du produit:', error);
+      Alert.alert('Erreur', 'Une erreur est survenue lors de la suppression du produit.');
+    }
+  };
+  
+
   const renderItem = ({ item }: { item: Product }) => {
     const totalQuantity = item.stocks.reduce((total, stock) => total + stock.quantity, 0);
     return (
-      <TouchableOpacity
-        style={[styles.itemContainer, { borderColor: getBorderColor(totalQuantity) }]}
-        onPress={() => router.push({ pathname: "/ProductDetailScreen", params: { id: item.id } })}
-      >
+      <View style={[styles.itemContainer, { borderColor: getBorderColor(totalQuantity) }]}>
         {item.image ? (
           <Image source={{ uri: item.image }} style={styles.productImage} />
         ) : (
@@ -82,7 +108,10 @@ const ProductListScreen: React.FC = () => {
           <Text style={styles.itemPrice}>{item.price} MAD</Text>
           <Text style={styles.itemStock}>Stock: {totalQuantity}</Text>
         </View>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deleteButton}>
+          <Text style={styles.deleteButtonText}>Supprimer</Text>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -115,7 +144,7 @@ const ProductListScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop:30,
+    marginTop: 30,
     padding: 20,
     backgroundColor: 'transparent',
   },
@@ -171,6 +200,16 @@ const styles = StyleSheet.create({
   itemStock: {
     fontSize: 14,
     color: '#666',
+  },
+  deleteButton: {
+    marginLeft: 10,
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   separator: {
     height: 10,
