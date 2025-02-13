@@ -5,11 +5,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import RNPickerSelect from 'react-native-picker-select';
+import { useNavigation } from 'expo-router';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 
 type RootStackParamList = {
   ProductList: undefined;
-  AddProductScreen: undefined;
+  AddProductScreen: { scannedBarcode?: string };
 };
 
 type AddProductScreenNavigationProp = NativeStackNavigationProp<
@@ -17,12 +19,17 @@ type AddProductScreenNavigationProp = NativeStackNavigationProp<
   'AddProductScreen'
 >;
 
+type AddProductScreenRouteProp = RouteProp<RootStackParamList, 'AddProductScreen'>;
+
+
 interface Props {
-  navigation: AddProductScreenNavigationProp;
+  route:any;
 }
 
 
-const AddProductScreen: React.FC<Props> = ({ navigation }) => {
+const AddProductScreen: React.FC<Props> = () => {
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>(); 
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [barcode, setBarcode] = useState('');
@@ -33,8 +40,14 @@ const AddProductScreen: React.FC<Props> = ({ navigation }) => {
   const [warehouseId, setWarehouseId] = useState(null);
   const [warehouseLocation, setWarehouseLocation] = useState(null);
   const [isStockAvailable, setIsStockAvailable] = useState(true);
-
+  const route = useRoute<AddProductScreenRouteProp>();
   useEffect(() => {
+    console.log("Route params:", route.params);
+    console.log("Received scannedBarcode:", route?.params?.scannedBarcode);
+    if (route?.params?.scannedBarcode) {
+      setBarcode(route.params.scannedBarcode);
+    }
+
     const getUserData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem('@user_data');
@@ -49,7 +62,7 @@ const AddProductScreen: React.FC<Props> = ({ navigation }) => {
     };
 
     getUserData();
-  }, []);
+  }, [route?.params?.scannedBarcode]);
 
   const handleSubmit = async () => {
     if (!name || !type || !barcode || !price || !supplier) {

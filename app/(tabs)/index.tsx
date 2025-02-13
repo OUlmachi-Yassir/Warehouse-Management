@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     color: '#34495E',
   },
   outOfStock: {
-    backgroundColor: '#FDEDEC', // Légèrement rouge pour attirer l'attention
+    backgroundColor: '#FDEDEC', 
   },
   loadingContainer: {
     flex: 1,

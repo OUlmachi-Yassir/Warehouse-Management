@@ -32,9 +32,10 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-        <Stack.Screen name="AddProductScreen" options={{ title: 'Add Product' }} />
+        <Stack.Screen name="AddProductScreen" options={{ title: 'Add Product' }} initialParams={{ scannedBarcode: null }} />
         <Stack.Screen name="ProductDetailScreen" options={{ title: '' }} />
+        <Stack.Screen name="CameraScaanScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

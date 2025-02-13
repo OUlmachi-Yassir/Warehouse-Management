@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import FloatingButtons from '@/components/FloatingButtons';
 import { sortProducts, filterByCity,searchProducts } from '@/services/productService';
 import { Picker } from '@react-native-picker/picker';
+import { FontAwesome } from '@expo/vector-icons'; // Use Expo's FontAwesome
 
 interface Stock {
   id: number;
@@ -126,12 +127,10 @@ const ProductListScreen: React.FC = () => {
         )}
         <View style={styles.textContainer}>
           <Text style={styles.itemName}>{item.name}</Text>
-          <Text style={styles.itemType}>{item.type}</Text>
-          <Text style={styles.itemPrice}>{item.price} MAD</Text>
           <Text style={styles.itemStock}>Stock: {totalQuantity}</Text>
         </View>
         <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deleteButton}>
-          <Text style={styles.deleteButtonText}>Supprimer</Text>
+        <FontAwesome name="trash" size={20} color="#fff" /> 
         </TouchableOpacity>
       </View>
     );
@@ -160,9 +159,8 @@ const ProductListScreen: React.FC = () => {
         onValueChange={(itemValue: string) => setSelectedCity(itemValue)}
       >
         <Picker.Item label="Sélectionner une ville" value="" />
-        <Picker.Item label="City 1" value="City 1" />
-        <Picker.Item label="City 2" value="City 2" />
-        <Picker.Item label="City 3" value="City 3" />
+        <Picker.Item label="Marrakech" value="Marrakech" />
+        <Picker.Item label="Oujda" value="Oujda" />
       </Picker>
 
       <View style={styles.sortingContainer}>

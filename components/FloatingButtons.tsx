@@ -49,7 +49,7 @@ const toggleButtons = () => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.button, instagramStyle]}>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity style={styles.buttonStyle} onPress={()=>router.push("/CameraScaanScreen")}>
           <Image
             source={{ uri: "https://img.icons8.com/ios/50/fingerprint-scan.png" }}
             style={styles.icon}
@@ -78,7 +78,7 @@ const toggleButtons = () => {
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: "90%", 
+    top: "88%", 
     left: "90%", 
     transform: [{ translateX: -25 }, { translateY: -25 }], 
     backgroundColor: "transparent",
