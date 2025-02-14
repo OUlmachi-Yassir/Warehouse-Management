@@ -38,6 +38,7 @@ const ProductDetailScreen = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
+      console.log(id)
       try {
         const response = await axios.get<Product>(`${process.env.EXPO_PUBLIC_APP_API_URL}/products/${id}`);
         setProduct(response.data);

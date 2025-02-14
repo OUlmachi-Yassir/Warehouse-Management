@@ -5,7 +5,8 @@ import { useRouter } from 'expo-router';
 import FloatingButtons from '@/components/FloatingButtons';
 import { sortProducts, filterByCity,searchProducts } from '@/services/productService';
 import { Picker } from '@react-native-picker/picker';
-import { FontAwesome } from '@expo/vector-icons'; // Use Expo's FontAwesome
+import { FontAwesome } from '@expo/vector-icons'; 
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface Stock {
   id: number;
@@ -82,9 +83,9 @@ const ProductListScreen: React.FC = () => {
   }, [searchKeyword, selectedCity, sortCriterion, sortOrder, products]);
 
   const getBorderColor = (quantity: number) => {
-    if (quantity === 0) return 'red';
-    if (quantity > 0 && quantity < 10) return 'yellow';
-    return 'green';
+    if (quantity === 0) return 'rgba(255, 13, 0, 0.54)';
+    if (quantity > 0 && quantity < 10) return 'rgba(242, 255, 0, 0.54)';
+    return 'rgba(0, 255, 0, 0.54)';
   };
 
   const handleDeleteProduct = async (productId: number) => {
@@ -117,7 +118,9 @@ const ProductListScreen: React.FC = () => {
   const renderItem = ({ item }: { item: Product }) => {
     const totalQuantity = item.stocks.reduce((total, stock) => total + stock.quantity, 0);
     return (
-      <View style={[styles.itemContainer, { borderColor: getBorderColor(totalQuantity) }]}>
+      <TouchableOpacity style={[styles.itemContainer, { borderLeftColor: getBorderColor(totalQuantity) }]}
+      onPress={() => router.push({ pathname: '/ProductDetailScreen', params: { id: item.id } })}
+      >
         {item.image ? (
           <Image source={{ uri: item.image }} style={styles.productImage} />
         ) : (
@@ -127,12 +130,19 @@ const ProductListScreen: React.FC = () => {
         )}
         <View style={styles.textContainer}>
           <Text style={styles.itemName}>{item.name}</Text>
-          <Text style={styles.itemStock}>Stock: {totalQuantity}</Text>
+          <View style={styles.aligne}>
+              <Text style={styles.itemStock}>Stock: {totalQuantity}</Text>
+              <Text style={styles.itemStock}>Prise: {item.price}</Text>
+          </View>
         </View>
-        <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deleteButton}>
-        <FontAwesome name="trash" size={20} color="#fff" /> 
-        </TouchableOpacity>
-      </View>
+       <View>
+          <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deleteButton}>
+            <FontAwesome name="trash" size={20} color="#fff" /> 
+            </TouchableOpacity>
+            
+       </View>
+        
+      </TouchableOpacity>
     );
   };
 
@@ -145,7 +155,11 @@ const ProductListScreen: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#C0C0C0','red',"#C8C8C8"]}
+      style={styles.container}
+    >
+    <View style={styles.innerContainer}>
       <TextInput
         style={styles.searchInput}
         placeholder="Rechercher un produit"
@@ -153,17 +167,10 @@ const ProductListScreen: React.FC = () => {
         onChangeText={setSearchKeyword}
       />
 
-      <Picker
-        selectedValue={selectedCity}
-        style={styles.picker}
-        onValueChange={(itemValue: string) => setSelectedCity(itemValue)}
-      >
-        <Picker.Item label="Sélectionner une ville" value="" />
-        <Picker.Item label="Marrakech" value="Marrakech" />
-        <Picker.Item label="Oujda" value="Oujda" />
-      </Picker>
 
       <View style={styles.sortingContainer}>
+      <Text style={styles.SortBy} >SortBy</Text>
+
         <TouchableOpacity onPress={() => setSortCriterion('price')} style={styles.sortButton}>
           <Text style={styles.sortButtonText}>Price</Text>
         </TouchableOpacity>
@@ -174,6 +181,15 @@ const ProductListScreen: React.FC = () => {
           <Text style={styles.sortButtonText}>Quantity</Text>
         </TouchableOpacity>
       </View>
+      <Picker
+          selectedValue={selectedCity}
+          style={styles.picker}
+          onValueChange={(itemValue: string) => setSelectedCity(itemValue)}
+        >
+          <Picker.Item label="Sélectionner une ville" value="" />
+          <Picker.Item label="Marrakech" value="Marrakech" />
+          <Picker.Item label="Oujda" value="Oujda" />
+        </Picker>
 
       <FlatList
         data={filteredProducts}
@@ -188,23 +204,39 @@ const ProductListScreen: React.FC = () => {
       />
       <FloatingButtons />
     </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 30,
-    padding: 20,
-    backgroundColor: 'transparent',
+  },
+  aligne:{
+    flex:1,
+    flexDirection:"row",
+    gap:10
+  },
+  innerContainer: {
+    flex: 1,
+    marginTop: 50,
+    backgroundColor: 'rgb(255, 247, 247)',
+    paddingTop: 20,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    paddingBottom:65,
   },
   searchInput: {
+    margin:"auto",
     height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
+    width:"90%",
+    borderColor: 'white',
+    borderWidth: 2,
+    borderRadius: 10,
     paddingLeft: 10,
     marginBottom: 20,
+    color: 'white',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
   },
   picker: {
     height: 50,
@@ -212,15 +244,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 20,
   },
+  SortBy:{
+    fontSize:20,
+    fontFamily:'lucida grande, bold , tahoma, verdana, arial, sans-serif',
+    marginRight: 10,
+  },
   sortingContainer: {
     flexDirection: 'row',
     marginBottom: 20,
+    margin:"auto",
   },
   sortButton: {
     marginRight: 10,
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
+    width:"22%",
+    paddingTop:2,
+    backgroundColor: 'black',
+    borderRadius: 20,
+    alignItems:"center",
   },
   sortButtonText: {
     color: '#fff',
@@ -228,13 +268,15 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    margin:"auto",
+    width:"90%",
     padding: 15,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: 10,
-    borderWidth: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    borderLeftWidth: 10,
+    shadowColor: 'rgba(255, 255, 255, 0.7)',
+    shadowOffset: { width: 3, height: 2 },
+    shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 3,
     marginBottom: 10,
@@ -280,7 +322,7 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     marginLeft: 10,
-    backgroundColor: 'red',
+    backgroundColor: 'rgba(249, 6, 6, 0.6)',
     padding: 10,
     borderRadius: 5,
   },
@@ -301,6 +343,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  detailsButton: {
+    backgroundColor: 'blue',
+    padding: 8,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  detailsButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  
 });
 
 export default ProductListScreen;
