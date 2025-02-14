@@ -7,9 +7,9 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
-import AddProductScreen from '@/app/AddProductScreen';
+import { Provider } from 'react-redux';
+import { store } from '@/services/redux/store';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -29,16 +29,18 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="AddProductScreen" options={{ title: 'Add Product' }} initialParams={{ scannedBarcode: null }} />
-        <Stack.Screen name="ProductDetailScreen" options={{ title: '' }} />
-        <Stack.Screen name="CameraScaanScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Provider store={store}> 
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="AddProductScreen" options={{ title: 'Add Product' }} initialParams={{ scannedBarcode: null }} />
+          <Stack.Screen name="ProductDetailScreen" options={{ title: '' }} />
+          <Stack.Screen name="CameraScaanScreen" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </Provider>
   );
 }

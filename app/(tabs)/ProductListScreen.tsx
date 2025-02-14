@@ -1,60 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image, Alert, TextInput  } from 'react-native';
-import axios from 'axios';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image, Alert, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import FloatingButtons from '@/components/FloatingButtons';
-import { sortProducts, filterByCity,searchProducts } from '@/services/productService';
 import { Picker } from '@react-native-picker/picker';
-import { FontAwesome } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useDispatch, useSelector } from 'react-redux';
+import { sortProducts, filterByCity, searchProducts, Product } from '@/services/productService';
+import { deleteProduct, fetchProducts } from '@/services/redux/productSlice';
+import { AppDispatch, RootState } from '@/services/redux/store';
 
-interface Stock {
-  id: number;
-  name: string;
-  quantity: number;
-  localisation: {
-    city: string;
-    latitude: number;
-    longitude: number;
-  };
-}
-
-interface Product {
-  id: number;
-  name: string;
-  type: string;
-  barcode: string;
-  price: number;
-  solde?: number;
-  supplier: string;
-  image?: string;
-  stocks: Stock[];
-  editedBy: {
-    warehousemanId: number;
-    at: string;
-  }[];
-}
-
-const ProductListScreen: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+const ProductListScreen = () => {
+  const dispatch = useDispatch<AppDispatch>();  const router = useRouter();
+  const { products, loading } = useSelector((state:RootState) => state.products);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
-  const [sortCriterion, setSortCriterion] = useState<'price' | 'name' | 'quantity'>('name');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const router = useRouter();
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortCriterion, setSortCriterion] = useState<"name" | "price" | "quantity">("name");
 
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get<Product[]>(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`);
-      setProducts(response.data);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des produits:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchProducts();
@@ -64,95 +28,40 @@ const ProductListScreen: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSearch = () => {
-    let result = [...products];
-
-    if (selectedCity) {
-      result = filterByCity(result, selectedCity);
-    }
-
-    result = searchProducts(result, searchKeyword, 'name'); 
-
-    result = sortProducts(result, sortCriterion, sortOrder);
-
-    setFilteredProducts(result);
-  };
-
   useEffect(() => {
-    handleSearch();
+    let result = [...products];
+    if (selectedCity) result = filterByCity(result, selectedCity);
+    result = searchProducts(result, searchKeyword, 'name');
+    result = sortProducts(result, sortCriterion, sortOrder);
+    setFilteredProducts(result);
   }, [searchKeyword, selectedCity, sortCriterion, sortOrder, products]);
 
-  const getBorderColor = (quantity: number) => {
-    if (quantity === 0) return 'rgba(255, 13, 0, 0.54)';
-    if (quantity > 0 && quantity < 10) return 'rgba(242, 255, 0, 0.54)';
-    return 'rgba(0, 255, 0, 0.54)';
-  };
-
-  const handleDeleteProduct = async (productId: number) => {
-    try {
-      const productToDelete = products.find(product => product.id === productId);
-  
-      await axios.delete(`${process.env.EXPO_PUBLIC_APP_API_URL}/products/${productId}`);
-  
-      if (productToDelete) {
-        const statestic = {
-          mostRemovedProducts:[productToDelete]
-        }; 
-        console.log(statestic);
-  
-        try {
-          const response = await axios.post(`${process.env.EXPO_PUBLIC_APP_API_URL}/statistics`, statestic);
-          console.log(response.data);
-        } catch (error) {
-          console.log('Here is the error', error);
-        }
-      }
-  
-      setProducts(prevProducts => prevProducts.filter(product => product.id !== productId));
-    } catch (error) {
-      console.error('Erreur lors de la suppression du produit:', error);
-      Alert.alert('Erreur', 'Une erreur est survenue lors de la suppression du produit.');
-    }
+  const handleDeleteProduct = (productId:number) => {
+    dispatch(deleteProduct(productId));
   };
 
   const renderItem = ({ item }: { item: Product }) => {
     const totalQuantity = item.stocks.reduce((total, stock) => total + stock.quantity, 0);
     return (
-      <TouchableOpacity style={[styles.itemContainer, { borderLeftColor: getBorderColor(totalQuantity) }]}
-      onPress={() => router.push({ pathname: '/ProductDetailScreen', params: { id: item.id } })}
-      >
+      <TouchableOpacity style={styles.itemContainer} onPress={() => router.push({ pathname: '/ProductDetailScreen', params: { id: item.id } })}>
         {item.image ? (
           <Image source={{ uri: item.image }} style={styles.productImage} />
         ) : (
-          <View style={styles.placeholderImage}>
-            <Text style={styles.placeholderText}>No Image</Text>
-          </View>
+          <View style={styles.placeholderImage}><Text style={styles.placeholderText}>No Image</Text></View>
         )}
         <View style={styles.textContainer}>
           <Text style={styles.itemName}>{item.name}</Text>
-          <View style={styles.aligne}>
-              <Text style={styles.itemStock}>Stock: {totalQuantity}</Text>
-              <Text style={styles.itemStock}>Prise: {item.price}</Text>
-          </View>
+          <Text>Stock: {totalQuantity}</Text>
+          <Text>Price: {item.price}</Text>
         </View>
-       <View>
-          <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deleteButton}>
-            <FontAwesome name="trash" size={20} color="#fff" /> 
-            </TouchableOpacity>
-            
-       </View>
-        
+        <TouchableOpacity onPress={() => handleDeleteProduct(item.id)} style={styles.deleteButton}>
+          <FontAwesome name="trash" size={20} color="#fff" />
+        </TouchableOpacity>
       </TouchableOpacity>
     );
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
 
   return (
     <LinearGradient

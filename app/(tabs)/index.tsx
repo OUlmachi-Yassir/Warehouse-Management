@@ -3,39 +3,9 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FontAwesome5, MaterialIcons, Ionicons, Feather } from '@expo/vector-icons'; 
 import { printProductList } from '@/services/printService';
+import { Product, Statistics, Stock } from '@/services/productService';
 
-interface Stock {
-  id: number;
-  name: string;
-  quantity: number;
-  localisation: {
-    city: string;
-    latitude: number;
-    longitude: number;
-  };
-}
-interface Product {
-  id: number;
-  name: string;
-  type: string;
-  barcode: string;
-  price: number;
-  solde?: number;
-  supplier: string;
-  image?: string;
-  stocks: Stock[];
-  editedBy: {
-    warehousemanId: number;
-    at: string;
-  }[];
-}
 
-interface Statistics {
-  totalProducts: number;
-  totalCities: number;
-  outOfStock: number;
-  totalStockValue: number;
-}
 
 export default function HomeScreen() {
   const [product, setProducts] = useState<Product[]>([]);

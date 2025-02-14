@@ -153,33 +153,6 @@
           "at": "2025-02-14"
         }
       ]
-    },
-    {
-      "id": "6912",
-      "name": "Test new",
-      "type": "Hola",
-      "barcode": "8314044660475",
-      "price": 6,
-      "supplier": "Tot",
-      "image": "Test",
-      "stocks": [
-        {
-          "id": 2991,
-          "name": "Entrepôt 2991",
-          "quantity": 23,
-          "localisation": {
-            "city": "Marrakech",
-            "latitude": 31.628674,
-            "longitude": -7.992047
-          }
-        }
-      ],
-      "editedBy": [
-        {
-          "warehousemanId": 2991,
-          "at": "2025-02-14"
-        }
-      ]
     }
   ],
   "warehousemans": [

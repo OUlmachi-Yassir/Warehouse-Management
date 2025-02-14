@@ -24,6 +24,12 @@ export interface Stock {
       at: string;
     }[];
   }
+  export interface Statistics {
+    totalProducts: number;
+    totalCities: number;
+    outOfStock: number;
+    totalStockValue: number;
+  }
   
   export const sortProducts = (
     products: Product[],

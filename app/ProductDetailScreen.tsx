@@ -5,25 +5,9 @@ import axios from "axios";
 import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from "react-native-svg";
+import { Product, Stock } from "@/services/productService";
 
-interface Stock {
-  id: number;
-  name: string;
-  quantity: number;
-  localisation: { city: string };
-}
 
-interface Product {
-  id: number;
-  name: string;
-  type: string;
-  barcode: string;
-  price: number;
-  solde?: number;
-  supplier: string;
-  image?: string;
-  stocks: Stock[];
-}
 
 const ProductDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();

@@ -6,20 +6,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from 'expo-router';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import {  useRoute } from '@react-navigation/native';
+import { AddProductScreenRouteProp, RootStackParamList } from './types/types';
 
-
-type RootStackParamList = {
-  ProductList: undefined;
-  AddProductScreen: { scannedBarcode?: string };
-};
-
-type AddProductScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'AddProductScreen'
->;
-
-type AddProductScreenRouteProp = RouteProp<RootStackParamList, 'AddProductScreen'>;
 
 
 interface Props {
