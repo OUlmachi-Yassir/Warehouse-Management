@@ -1,7 +1,8 @@
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Button } from 'react-native';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FontAwesome5, MaterialIcons, Ionicons, Feather } from '@expo/vector-icons'; 
+import { printProductList } from '@/services/printService';
 
 interface Stock {
   id: number;
@@ -37,12 +38,14 @@ interface Statistics {
 }
 
 export default function HomeScreen() {
+  const [product, setProducts] = useState<Product[]>([]);
   const [statistics, setStatistics] = useState<Statistics | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchStatistics = async () => {
     try {
       const response = await axios.get(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`);
+      setProducts(response.data)
       const products = Array.isArray(response.data) ? response.data : []; 
 
       const totalProducts = products.length;
@@ -120,6 +123,7 @@ export default function HomeScreen() {
       ) : (
         <Text>Aucune donnée disponible</Text>
       )}
+      <Button title="📄 Imprimer Liste Produits" onPress={() => printProductList(product)} />
     </View>
   );
 }
