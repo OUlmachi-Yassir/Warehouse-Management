@@ -3,6 +3,8 @@ import { View, Text, Image, StyleSheet, ActivityIndicator, FlatList, TouchableOp
 import { useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { Picker } from "@react-native-picker/picker";
+import { LinearGradient } from 'expo-linear-gradient';
+import Svg, { Path } from "react-native-svg";
 
 interface Stock {
   id: number;
@@ -158,18 +160,32 @@ const ProductDetailScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      {product.image && <Image source={{ uri: product.image }} style={styles.productImage} />}
-      <Text style={styles.productName}>{product.name}</Text>
-      <Text>Type: {product.type}</Text>
-      <Text>Code-barres: {product.barcode}</Text>
-      <Text>Prix: {product.price} MAD</Text>
-      <Text>Fournisseur: {product.supplier}</Text>
+    <LinearGradient
+          colors={['#C0C0C0','red',"#C8C8C8"]}
+          style={styles.container}
+        >
 
-      <Text style={styles.stockTitle}>Stocks :</Text>
-      <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-        <Text style={styles.buttonText}>Ajouter un stock</Text>
-      </TouchableOpacity>
+    <View style={styles.innerContainer}>
+      <View style={styles.marge}>
+        {product.image && <Image source={{ uri: product.image }} style={styles.productImage} />}
+        <Text style={styles.productName}>{product.name}</Text>
+        <View style={styles.prodType}>
+        <Text style={[styles.prodStrong]}>{product.type}</Text>
+        <Text style={styles.prodForn}>{product.supplier}</Text>
+        </View>        
+        <Text style={styles.prodCodeBar}>Code-barres: {product.barcode}</Text>
+        <Text style={styles.prodPrice}>Prix: {product.price} MAD</Text>
+        <View style={styles.prodType} >
+          <Text style={styles.stockTitle}>Stocks </Text>
+          <TouchableOpacity style={styles.button1} onPress={() => setModalVisible(true)}>
+          <Svg width={30} height={30} viewBox="0 0 30 30" fill={"black"}>
+          <Path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z" />
+          </Svg>
+            </TouchableOpacity>
+        </View>
+      </View>
+      
+     
       <FlatList
         data={product.stocks || []}
         keyExtractor={(stock) => stock.id?.toString() || Math.random().toString()}
@@ -227,20 +243,35 @@ const ProductDetailScreen = () => {
                 ))}
               </Picker>
             </View>
-            <Button title="Ajouter" onPress={addStock} />
-            <Button title="Fermer" onPress={() => setModalVisible(false)} />
+            <View style={styles.flex}>
+              <TouchableOpacity style={[styles.button, styles.addButton]} onPress={addStock}>
+                <Text style={styles.buttonText}>Ajouter</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.closeButton]} onPress={() => setModalVisible(false)}>
+                <Text style={styles.buttonText}>Fermer</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
     </View>
+    </LinearGradient>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    alignItems: "center",
+  },
+  innerContainer: {
+    flex: 1,
+    marginTop: 5,
+    backgroundColor: 'rgb(255, 247, 247)',
+    paddingTop: 20,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    paddingHorizontal: 20,
   },
   loadingContainer: {
     flex: 1,
@@ -251,39 +282,99 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: "contain",
-    marginBottom: 20,
+    alignSelf: "center",
+  },
+  prodStrong:{
+    backgroundColor:'#f9e46c',
+    borderRadius:10,
+    fontSize: 16,
+    fontWeight: "bold",
+    paddingHorizontal:10
+  },
+  productName: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 10,
+    margin:"auto"
+  },
+  prodType: {
+    marginTop:5,
+    flexDirection:"row",
+    justifyContent:"space-between",
+    alignItems:"center"
+  },
+  prodType2:{
+    color:"black",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  prodCodeBar: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  prodPrice: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "green",
+  },
+  prodForn: {
+    fontSize: 16,
+    textAlign: "center",
+  },
+  stockTitle: {
+    marginTop: 20,
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  marge:{
+    marginBottom:5,
+  },
+  stockItem: {
+    width: "100%",
+    padding: 10,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 10,
+    marginVertical: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   stockControls: {
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 10,
   },
-  productName: {
-    fontSize: 22,
-    fontWeight: "bold",
-  },
-  stockTitle: {
-    marginTop: 20,
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  stockItem: {
-    width: "100%",
-    padding: 10,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 5,
-    marginVertical: 5,
+  button1:{
+    backgroundColor: "#eeaeca",
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderRadius: 50,
+    alignItems: "center",
+    marginTop: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   button: {
     backgroundColor: "#007bff",
-    padding: 10,
-    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 30,
     alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
     color: "#fff",
+    fontSize: 16,
     fontWeight: "bold",
+  },
+  deleteButton: {
+    backgroundColor: "#dc3545",
   },
   modalContainer: {
     flex: 1,
@@ -292,34 +383,49 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    width: 300,
+    width: "80%",
     padding: 20,
     backgroundColor: "#fff",
     borderRadius: 10,
+    alignItems: "center",
+  },
+  flex:{
+    flexDirection:"row",
+    gap:40
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  addButton:{
+    backgroundColor:'rgb(198, 185, 244)',
+    width:"40%",
+  },
+  closeButton:{
+    backgroundColor:'rgb(249, 94, 94)',
+    width:"40%",
   },
   input: {
-    height: 40,
-    borderColor: "#ddd",
+    width: "100%",
     borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 10,
+    borderColor: "#ccc",
     borderRadius: 5,
+    padding: 10,
+    marginVertical: 5,
   },
   inputLabel: {
+    fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginTop: 10,
   },
   citySelector: {
-    marginBottom: 10,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    marginVertical: 5,
   },
-  deleteButton: {
-    backgroundColor: "red",
-  }
 });
 
 export default ProductDetailScreen;

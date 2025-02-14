@@ -50,7 +50,7 @@
         {
           "id": 1999,
           "name": "Gueliz B2",
-          "quantity": 21,
+          "quantity": 32,
           "localisation": {
             "city": "Marrakesh",
             "latitude": 31.628674,
@@ -65,24 +65,6 @@
             "city": "Oujda",
             "latitude": 34.689404,
             "longitude": -1.912823
-          }
-        },
-        {
-          "name": "TEST",
-          "quantity": 2,
-          "localisation": {
-            "city": "Marrakesh",
-            "latitude": "",
-            "longitude": ""
-          }
-        },
-        {
-          "name": "Rrghh",
-          "quantity": 2,
-          "localisation": {
-            "city": "Oujda",
-            "latitude": "",
-            "longitude": ""
           }
         }
       ],
@@ -127,11 +109,75 @@
       "price": 0,
       "supplier": "1OP",
       "image": "https://technoplace.ma/18113-side_product_default/dell-precision-5550-i7-10750h-156-fhd-16gb-1tb-ssd-win-10-pro-nvidia-quadro-t1000-4gb-36m.jpg",
-      "stocks": [],
+      "stocks": [
+        {
+          "name": "Ilza",
+          "quantity": 5,
+          "localisation": {
+            "city": "Marrakesh",
+            "latitude": "",
+            "longitude": ""
+          }
+        }
+      ],
       "editedBy": [
         {
           "warehousemanId": 2991,
           "at": "2025-02-12"
+        }
+      ]
+    },
+    {
+      "id": "403f",
+      "name": "Test",
+      "type": "Test",
+      "barcode": "12345",
+      "price": 423,
+      "supplier": "Test",
+      "image": "Test",
+      "stocks": [
+        {
+          "id": 2991,
+          "name": "Entrepôt 2991",
+          "quantity": 14,
+          "localisation": {
+            "city": "Marrakech",
+            "latitude": 31.628674,
+            "longitude": -7.992047
+          }
+        }
+      ],
+      "editedBy": [
+        {
+          "warehousemanId": 2991,
+          "at": "2025-02-14"
+        }
+      ]
+    },
+    {
+      "id": "6912",
+      "name": "Test new",
+      "type": "Hola",
+      "barcode": "8314044660475",
+      "price": 6,
+      "supplier": "Tot",
+      "image": "Test",
+      "stocks": [
+        {
+          "id": 2991,
+          "name": "Entrepôt 2991",
+          "quantity": 23,
+          "localisation": {
+            "city": "Marrakech",
+            "latitude": 31.628674,
+            "longitude": -7.992047
+          }
+        }
+      ],
+      "editedBy": [
+        {
+          "warehousemanId": 2991,
+          "at": "2025-02-14"
         }
       ]
     }

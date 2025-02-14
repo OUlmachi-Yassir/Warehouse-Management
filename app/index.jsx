@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     width: '90%',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+    backgroundColor: 'rgba(237, 194, 194, 0.59)', 
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     borderRadius: 8,
+    backgroundColor: 'rgba(40, 37, 37, 0.75)',
+
   },
 });
 

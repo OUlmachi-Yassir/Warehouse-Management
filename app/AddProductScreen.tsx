@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Switch } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Switch, ScrollView } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -111,7 +111,7 @@ const AddProductScreen: React.FC<Props> = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.label}>Nom du produit *</Text>
       <TextInput style={styles.input} value={name} onChangeText={setName} />
 
@@ -164,13 +164,14 @@ const AddProductScreen: React.FC<Props> = () => {
       />
 
       <Button title="Ajouter le produit" onPress={handleSubmit} />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingHorizontal:20,
+    paddingBottom:10
   },
   label: {
     fontWeight: 'bold',
@@ -188,6 +189,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
   },
+  button:{
+
+  }
 });
 
 export default AddProductScreen;

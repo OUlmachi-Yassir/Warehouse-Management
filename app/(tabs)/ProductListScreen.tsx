@@ -187,7 +187,7 @@ const ProductListScreen: React.FC = () => {
           onValueChange={(itemValue: string) => setSelectedCity(itemValue)}
         >
           <Picker.Item label="Sélectionner une ville" value="" />
-          <Picker.Item label="Marrakech" value="Marrakech" />
+          <Picker.Item label="Marrakesh" value="Marrakesh" />
           <Picker.Item label="Oujda" value="Oujda" />
         </Picker>
 
