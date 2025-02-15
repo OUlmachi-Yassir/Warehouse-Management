@@ -21,10 +21,8 @@ const ProductListScreen = () => {
 
 
   useEffect(() => {
-    fetchProducts();
-
-    const interval = setInterval(fetchProducts, 1000);
-
+    dispatch(fetchProducts());
+    const interval = setInterval(() => fetchProducts, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -40,10 +38,16 @@ const ProductListScreen = () => {
     dispatch(deleteProduct(productId));
   };
 
+  const getBorderColor = (quantity: number) => {
+    if (quantity === 0) return 'rgba(255, 13, 0, 0.54)';
+    if (quantity > 0 && quantity < 10) return 'rgba(242, 255, 0, 0.54)';
+    return 'rgba(0, 255, 0, 0.54)';
+  };
+
   const renderItem = ({ item }: { item: Product }) => {
     const totalQuantity = item.stocks.reduce((total, stock) => total + stock.quantity, 0);
     return (
-      <TouchableOpacity style={styles.itemContainer} onPress={() => router.push({ pathname: '/ProductDetailScreen', params: { id: item.id } })}>
+      <TouchableOpacity style={[styles.itemContainer, { borderLeftColor: getBorderColor(totalQuantity) }]} onPress={() => router.push({ pathname: '/ProductDetailScreen', params: { id: item.id } })}>
         {item.image ? (
           <Image source={{ uri: item.image }} style={styles.productImage} />
         ) : (

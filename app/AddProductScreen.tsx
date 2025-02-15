@@ -92,7 +92,7 @@ const AddProductScreen: React.FC<Props> = () => {
     try {
       await axios.post(`${process.env.EXPO_PUBLIC_APP_API_URL}/products`, newProduct);
       Alert.alert('Succès', 'Produit ajouté avec succès.', [
-        { text: 'OK', onPress: () => navigation.popToTop() },
+        { text: 'OK', onPress: () => navigation.goBack() },
       ]);
     } catch (error) {
       Alert.alert('Erreur', 'Une erreur est survenue lors de l\'ajout du produit.');

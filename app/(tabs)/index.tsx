@@ -1,9 +1,13 @@
-import { View, Text, StyleSheet, ActivityIndicator, Button } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Button, TouchableOpacity, Alert } from 'react-native';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FontAwesome5, MaterialIcons, Ionicons, Feather } from '@expo/vector-icons'; 
 import { printProductList } from '@/services/printService';
 import { Product, Statistics, Stock } from '@/services/productService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Tabs, useNavigation, useRouter } from 'expo-router';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/types';
 
 
 
@@ -11,6 +15,10 @@ export default function HomeScreen() {
   const [product, setProducts] = useState<Product[]>([]);
   const [statistics, setStatistics] = useState<Statistics | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>(); 
+
+  
 
   const fetchStatistics = async () => {
     try {
@@ -56,6 +64,14 @@ export default function HomeScreen() {
     return () => clearInterval(interval);
   }, []);
 
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('@user_data'); 
+    Alert.alert('Succès', 'Logout avec succès.', [
+            { text: 'OK', onPress: () => navigation.popToTop() },
+          ]);
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -67,6 +83,12 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
+
       <Text style={styles.title}>📊 Statistiques du Stock</Text>
       {statistics ? (
         <>
@@ -143,5 +165,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: '#4A90E2',
+  },
+  logoutButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });

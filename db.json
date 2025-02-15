@@ -139,7 +139,43 @@
         {
           "id": 2991,
           "name": "Entrepôt 2991",
-          "quantity": 14,
+          "quantity": 15,
+          "localisation": {
+            "city": "Marrakech",
+            "latitude": 31.628674,
+            "longitude": -7.992047
+          }
+        },
+        {
+          "name": "Tt",
+          "quantity": 5,
+          "localisation": {
+            "city": "Marrakesh",
+            "latitude": "",
+            "longitude": ""
+          }
+        }
+      ],
+      "editedBy": [
+        {
+          "warehousemanId": 2991,
+          "at": "2025-02-14"
+        }
+      ]
+    },
+    {
+      "id": "74a4",
+      "name": "Add",
+      "type": "Test",
+      "barcode": "Test",
+      "price": 153,
+      "supplier": "Test",
+      "image": "Url",
+      "stocks": [
+        {
+          "id": 2991,
+          "name": "Entrepôt 2991",
+          "quantity": 236,
           "localisation": {
             "city": "Marrakech",
             "latitude": 31.628674,
@@ -150,7 +186,7 @@
       "editedBy": [
         {
           "warehousemanId": 2991,
-          "at": "2025-02-14"
+          "at": "2025-02-15"
         }
       ]
     }
