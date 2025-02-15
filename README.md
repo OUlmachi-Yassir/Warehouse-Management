@@ -1,8 +1,82 @@
 # Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# Gestion de Stock - Application Mobile
 
-## Get started
+## Contexte du projet
+
+Un magasin souhaite moderniser et simplifier la gestion de son stock en mettant à disposition des magasiniers une application intuitive. Cette application devra permettre :
+
+Une application mobile intuitive pour simplifier la gestion des stocks en magasin. Elle permet aux magasiniers d'ajouter, retirer et suivre les produits en temps réel via un scanner de code-barres ou une saisie manuelle.
+
+- **Une gestion rapide des stocks** grâce à un scanner de code-barres et une saisie manuelle.
+- **Un suivi en temps réel des produits**, avec la possibilité d'ajouter ou de retirer des quantités en stock.
+- **L’ajout simplifié de nouveaux produits** via un formulaire interactif.
+- L’objectif est d’optimiser la gestion du stock tout en réduisant les erreurs humaines.
+
+## Fonctionnalités Principales
+
+### 1. Authentification
+Chaque utilisateur disposera d’un code secret personnel lui permettant d'accéder à l'application.
+
+### 2. Gestion des produits
+- **Identification des produits** :
+  - Scanner de code-barres intégré pour une identification rapide en utilisant `expo-barcode-scanner`.
+  - Saisie manuelle du code-barres en cas de dysfonctionnement du scanner.
+  - Vérification automatique dans la base de données.
+  
+- **Produit existant** :
+  - Possibilité d'ajouter ou de retirer des quantités dans un entrepôt.
+  - Affichage des informations du produit (nom, type, prix, quantité disponible par entrepôt).
+
+- **Produit non existant** :
+  - Proposition d’un formulaire de création avec les champs suivants :
+    - Nom, type, prix, fournisseur, quantité initiale (si supérieure à 0, préciser l’entrepôt concerné), image du produit (facultatif).
+
+### 3. Liste des produits
+- Affichage détaillé des produits stockés :
+  - Nom, type, prix (ex: “Solde”, “Prix régulier”), quantité disponible, état du stock (ex : "En stock", "Stock épuisé").
+  - Produit édité par ?.
+  - **Indicateurs visuels** :
+    - Couleur rouge pour les produits en rupture de stock.
+    - Couleur jaune pour les produits en faible quantité (ex : <10 unités).
+
+- **Actions disponibles** :
+  - Bouton "Réapprovisionner" pour augmenter la quantité.
+  - Bouton "Décharger" pour retirer des unités.
+
+### 4. Fonctionnalités avancées
+- **Filtrage et recherche** :
+  - Recherche par nom, type, prix ou fournisseur.
+  
+- **Tri dynamique** :
+  - Tri des produits par prix croissant/décroissant, nom alphabétique ou quantité.
+
+### 5. Statistiques et résumé des stocks
+Tableau de bord affichant les indicateurs suivants :
+  - Nombre total de produits.
+  - Nombre total de villes.
+  - Produits en rupture de stock.
+  - La valeur totale des stocks.
+  - Les produits les plus ajoutés/retirés récemment.
+
+### 6. Sauvegarde et export des données
+Exporter un rapport de produit sous format PDF en utilisant `expo-print`.
+
+## Configuration de la partie Backend
+
+Un fichier `db.json` est à votre disposition dans les ressources. Suivez ces étapes pour démarrer :
+
+1. Se déplacer vers le répertoire où se trouve le fichier `db.json`.
+2. Installer `json-server` globalement :
+   ```bash
+   npm i -g json-server
+3. Démarrer le serveur avec la commande :
+   ```bash
+   npx json-server db.json
+
+
+
+## Installation et démarrage de l'application
 
 1. Install dependencies
 
