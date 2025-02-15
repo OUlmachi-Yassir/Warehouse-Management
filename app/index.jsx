@@ -5,12 +5,20 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from 'react-native-paper';
+import { validateSecretKey } from './../services/ValidationDesImputes/validationService';
 
 const LoginScreen = () => {
   const [secretKey, setSecretKey] = useState('');
   const navigation = useNavigation();
 
   const handleLogin = async () => {
+
+    const validationError = validateSecretKey(secretKey);
+    if (validationError) {
+      Alert.alert('Erreur', validationError);
+      return;
+    }
+
     try {
       const response = await axios.get(`${process.env.EXPO_PUBLIC_APP_API_URL}/warehousemans`);
       const warehousemans = response.data;

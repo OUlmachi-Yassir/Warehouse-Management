@@ -8,6 +8,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from 'expo-router';
 import {  useRoute } from '@react-navigation/native';
 import { AddProductScreenRouteProp, RootStackParamList } from './types/types';
+import { validateBarcode, validateName, validatePrice, validateQuantity, validateSupplier, validateType } from '@/services/ValidationDesImputes/validationService';
 
 
 
@@ -29,6 +30,16 @@ const AddProductScreen: React.FC<Props> = () => {
   const [warehouseId, setWarehouseId] = useState(null);
   const [warehouseLocation, setWarehouseLocation] = useState(null);
   const [isStockAvailable, setIsStockAvailable] = useState(true);
+  const [errors, setErrors] = useState({
+    name: '',
+    type: '',
+    barcode: '',
+    price: '',
+    supplier: '',
+    quantity: ''
+  });
+
+
   const route = useRoute<AddProductScreenRouteProp>();
   useEffect(() => {
     console.log("Route params:", route.params);
@@ -54,6 +65,45 @@ const AddProductScreen: React.FC<Props> = () => {
   }, [route?.params?.scannedBarcode]);
 
   const handleSubmit = async () => {
+    let valid = true;
+    let formErrors = {
+      name: '',
+      type: '',
+      barcode: '',
+      price: '',
+      supplier: '',
+      quantity: ''
+    };
+    if (!validateName(name)) {
+      Alert.alert('Erreur', 'Le nom du produit doit être d\'au moins 3 caractères et ne contenir que des lettres et des espaces.');
+      return;
+    }
+  
+    if (!validateType(type)) {
+      Alert.alert('Erreur', 'Le type du produit est requis.');
+      return;
+    }
+  
+    if (!validateBarcode(barcode)) {
+      formErrors.barcode = 'Le code-barres doit contenir entre 12 et 13 chiffres.';
+      return valid = false;
+    }
+  
+    if (!validatePrice(price)) {
+      Alert.alert('Erreur', 'Le prix doit être un nombre valide.');
+      return;
+    }
+  
+    if (!validateSupplier(supplier)) {
+      Alert.alert('Erreur', 'Le fournisseur est requis.');
+      return;
+    }
+  
+    if (!validateQuantity(quantity, isStockAvailable)) {
+      Alert.alert('Erreur', 'Veuillez spécifier une quantité valide en stock.');
+      return;
+    }
+
     if (!name || !type || !barcode || !price || !supplier) {
       Alert.alert('Erreur', 'Veuillez remplir tous les champs obligatoires.');
       return;
@@ -63,6 +113,7 @@ const AddProductScreen: React.FC<Props> = () => {
       Alert.alert('Erreur', 'Veuillez spécifier une quantité en stock.');
       return;
     }
+    setErrors(formErrors);
 
     const newProduct = {
       name,
@@ -109,7 +160,7 @@ const AddProductScreen: React.FC<Props> = () => {
 
       <Text style={styles.label}>Code-barres *</Text>
       <TextInput style={styles.input} value={barcode} onChangeText={setBarcode} />
-
+      {errors.barcode && <Text style={styles.errorText}>{errors.barcode}</Text>}
       <Text style={styles.label}>Prix *</Text>
       <TextInput
         style={styles.input}
@@ -178,8 +229,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
   },
-  button:{
-
+  errorText:{
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
   }
 });
 

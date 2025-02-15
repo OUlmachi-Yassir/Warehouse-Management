@@ -164,18 +164,18 @@
       ]
     },
     {
-      "id": "74a4",
-      "name": "Add",
-      "type": "Test",
-      "barcode": "Test",
-      "price": 153,
-      "supplier": "Test",
+      "id": "2bff",
+      "name": "Another",
+      "type": "Another",
+      "barcode": "1234567890123",
+      "price": 66,
+      "supplier": "Gjsujsv",
       "image": "Url",
       "stocks": [
         {
           "id": 2991,
           "name": "Entrepôt 2991",
-          "quantity": 236,
+          "quantity": 25,
           "localisation": {
             "city": "Marrakech",
             "latitude": 31.628674,
